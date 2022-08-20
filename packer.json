@@ -1,0 +1,19 @@
+{
+  "builders": [
+    {
+      "type": "docker",
+      "image": "ubuntu:jammy",
+      "privileged": true,
+      "discard": true,
+      "volumes": {  "{{pwd}}/": "/workspace"}
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "go.sh"
+      ]
+    }
+  ]
+}
