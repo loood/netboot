@@ -12,8 +12,8 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define "pxe" do |machine_config|
-    machine_config.vm.network :private_network,
-                                :type => "dhcp"
+    #machine_config.vm.network :private_network,
+    #                            :type => "dhcp"
     #                            :libvirt__dhcp_bootp_file => "http://172.17.0.1:#{PORT}/boot.ipxe"
     machine_config.vm.provider :libvirt do |pxe|
       pxe.memory = 8000
@@ -22,9 +22,9 @@ Vagrant.configure(2) do |config|
       pxe.storage :file, :size => '10G'
       pxe.graphics_type = "vnc"
       pxe.boot 'network'
-      pxe.kernel = "#{Dir.pwd}/files/vmlinuz-5.15.0-46-generic"
-      pxe.initrd = "#{Dir.pwd}/files/initrd.img-5.15.0-46-generic"
-      pxe.cmd_line = "fetch=http://172.17.0.1:#{PORT}/filesystem.squashfs dhcp boot=live nomodeset live-config.debug=true"
+      pxe.kernel = "#{Dir.pwd}/files/vmlinuz-5.15.0-76-generic"
+      pxe.initrd = "#{Dir.pwd}/files/initrd.img-5.15.0-76-generic"
+      pxe.cmd_line = "fetch=http://172.17.0.1:#{PORT}/filesystem.squashfs dhcp boot=live nomodeset live-config.debug=true persistence vga=1"
       #pxe.serial :type => "file", :source => {:path => File.join(File.dirname(__FILE__), 'serial.log')}
 
       #machine_config.vm.synced_folder ".", "/vagrant", disabled: false, create: true

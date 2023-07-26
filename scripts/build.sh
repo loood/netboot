@@ -5,7 +5,10 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y live-config live-build gpgv1 gpgv2 xz-utils squashfs-tools
 #sed -i 's/^find/#find/g' /usr/lib/live/build/lb_chroot_hacks
-mkdir -p /workspace/live/
+
+rm -rf /workspace/live/
+mkdir /workspace/live/
+chown --reference=/workspace /workspace/live/
 cd /workspace/live
 lb clean --all
 lb config \
@@ -30,8 +33,8 @@ lb config \
 --system live  \
 --bootloader none \
 --binary-images none \
---apt-recommends false
-
+--apt-recommends false \
+--apt-indices false
 
 #--zsync false 
 
@@ -48,5 +51,8 @@ lb config \
 
 
 echo "user-setup sudo initramfs-tools" > config/package-lists/recommends.list.chroot
+# if "--bootstrap-flavour minimal" is used, uncomment this. will work packages are missing still.
+#echo "user-setup sudo initramfs-tools systemd-sysv" > config/package-lists/recommends.list.chroot
 
 lb build
+chmod go+r /workspace/live/binary/live/*
