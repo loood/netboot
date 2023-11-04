@@ -14,7 +14,7 @@ lb clean --all
 lb config \
 --distribution jammy \
 --parent-distribution jammy \
---bootstrap-flavour standard \
+--bootstrap-flavour minimal \
 --archive-areas "main universe" \
 --parent-archive-areas "main universe" \
 --bootstrap debootstrap \
@@ -34,7 +34,8 @@ lb config \
 --bootloader none \
 --binary-images none \
 --apt-recommends false \
---apt-indices false
+--apt-indices false \
+--linux-packages "linux-image-5.15.0-88"
 
 #--zsync false 
 
@@ -52,7 +53,19 @@ lb config \
 
 echo "user-setup sudo initramfs-tools" > config/package-lists/recommends.list.chroot
 # if "--bootstrap-flavour minimal" is used, uncomment this. will work packages are missing still.
-#echo "user-setup sudo initramfs-tools systemd-sysv" > config/package-lists/recommends.list.chroot
+echo "user-setup sudo initramfs-tools systemd-sysv dbus iproute2 netplan.io less" > config/package-lists/recommends.list.chroot
+mkdir -p config/includes.chroot/etc/netplan
+cat << EOF > config/includes.chroot/etc/netplan/00-default.yaml
+network:
+  version: 2
+  ethernets:
+    all-eth:
+      match:
+        name: "en*"
+      dhcp4: yes
+      dhcp6: yes
+EOF
+
 
 lb build
 chmod go+r /workspace/live/binary/live/*
