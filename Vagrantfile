@@ -24,7 +24,7 @@ Vagrant.configure(2) do |config|
       pxe.boot 'network'
       pxe.kernel = "#{Dir.pwd}/files/vmlinuz-5.15.0-88-generic"
       pxe.initrd = "#{Dir.pwd}/files/initrd.img-5.15.0-88-generic"
-      pxe.cmd_line = "fetch=http://172.17.0.1:#{PORT}/filesystem.squashfs dhcp boot=live nomodeset live-config.debug=true vga=1"
+      pxe.cmd_line = "fetch=http://172.17.0.1:#{PORT}/filesystem.squashfs dhcp boot=live nomodeset live-config.debug=true vga=1 live-config.nocomponents=hostname"
       #pxe.serial :type => "file", :source => {:path => File.join(File.dirname(__FILE__), 'serial.log')}
 
       #machine_config.vm.synced_folder ".", "/vagrant", disabled: false, create: true

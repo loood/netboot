@@ -2,7 +2,7 @@
   "builders": [
     {
       "type": "docker",
-      "image": "ubuntu:jammy",
+      "image": "debian:bookworm",
       "privileged": true,
       "discard": true,
       "volumes": {  "{{pwd}}/": "/workspace"}
