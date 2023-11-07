@@ -2,7 +2,9 @@
 
 Build netboot/webboot files using live-build tooling. My goal in this project is just to have a reference
 on how to build a minimalist netboot image (near 100MB if possible. Currently a tiny bit over but that little
-extra does had functionality).
+extra does had functionality in the image and a maintained build tools). I kept running into issues with ubuntu's live-build so I've switched to using 
+Debian's. This is why packer is configured to use `debian:bookwork` as its container. This caused the image to increase in size some (20-30MB) but I'll
+deal with it later.
 
 ## What gets built?
 * ubuntu 22.04 netboot
@@ -21,7 +23,6 @@ You can change what you want / need.
 ## Tools needed to build this
 * packer
   * docker
-* rsync (probably can get rid of this)
 * vagrant
 * libvirt
 
