@@ -1,13 +1,14 @@
 #!/bin/bash
-set -x -e
+set -x
 export UBUNTU_MIRROR='http://mirror.us-sc.kamatera.com/ubuntu/'
 export IN_IMAGE_UBUNTU_MIRROR='http://us.archive.ubuntu.com/ubuntu/'
 export MKSQUASHFS_OPTIONS="-b 1048576 -comp xz -Xdict-size 100% -regex -e proc/.* -e sys/.* -e run/.* -e var/lib/apt/lists/.*"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y live-config live-build gpgv1 gpgv2 xz-utils squashfs-tools
+apt-get install -y live-config live-build gpgv1 gpgv2 xz-utils squashfs-tools dosfstools mtools
 #sed -i 's/^find/#find/g' /usr/lib/live/build/lb_chroot_hacks
 
+sed -i '159s/^set -e/set -e -x/' /usr/lib/live/build/binary_grub-efi
 rm -rf /workspace/live/
 mkdir /workspace/live/
 chown --reference=/workspace /workspace/live/
@@ -40,6 +41,7 @@ lb config \
 --linux-packages "linux-image-unsigned-5.15.0-88" \
 --linux-flavours "generic"
 
+lb config --binary-image iso-hybrid
 #--zsync false 
 
 
