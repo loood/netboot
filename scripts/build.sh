@@ -5,7 +5,7 @@ export IN_IMAGE_UBUNTU_MIRROR='http://us.archive.ubuntu.com/ubuntu/'
 export MKSQUASHFS_OPTIONS="-b 1048576 -comp xz -Xdict-size 100% -regex -e proc/.* -e sys/.* -e run/.* -e var/lib/apt/lists/.*"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y live-config live-build gpgv1 gpgv2 xz-utils squashfs-tools
+apt-get install -y live-config live-build gpg gpgv1 xz-utils squashfs-tools
 #sed -i 's/^find/#find/g' /usr/lib/live/build/lb_chroot_hacks
 
 rm -rf /workspace/live/
@@ -14,8 +14,8 @@ chown --reference=/workspace /workspace/live/
 cd /workspace/live
 lb clean --all
 lb config \
---distribution jammy \
---parent-distribution jammy \
+--distribution resolute \
+--parent-distribution resolute \
 --archive-areas "main universe" \
 --parent-archive-areas "main universe" \
 --architecture amd64 \
@@ -37,7 +37,7 @@ lb config \
 --apt-indices false \
 --mode ubuntu \
 --updates true \
---linux-packages "linux-image-unsigned-5.15.0-88" \
+--linux-packages "linux-image-unsigned-7.0.0-14" \
 --linux-flavours "generic"
 
 #--zsync false 

@@ -2,7 +2,7 @@
   "builders": [
     {
       "type": "docker",
-      "image": "debian:bookworm",
+      "image": "debian:trixie",
       "privileged": true,
       "discard": true,
       "volumes": {  "{{pwd}}/": "/workspace"}
