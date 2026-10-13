@@ -5,7 +5,9 @@
       "image": "debian:trixie",
       "privileged": true,
       "discard": true,
-      "volumes": {  "{{pwd}}/": "/workspace"}
+      "volumes": {
+        "{{pwd}}/": "/workspace"
+      }
     }
   ],
   "provisioners": [

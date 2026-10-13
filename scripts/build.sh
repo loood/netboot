@@ -1,9 +1,12 @@
 #!/bin/bash
 set -x -e
-export UBUNTU_MIRROR='http://mirror.us-sc.kamatera.com/ubuntu/'
-export IN_IMAGE_UBUNTU_MIRROR='http://us.archive.ubuntu.com/ubuntu/'
+set -o pipefail
+export UBUNTU_MIRROR='https://mirror.us-sc.kamatera.com/ubuntu/'
+export IN_IMAGE_UBUNTU_MIRROR='https://us.archive.ubuntu.com/ubuntu/'
 export MKSQUASHFS_OPTIONS="-b 1048576 -comp xz -Xdict-size 100% -regex -e proc/.* -e sys/.* -e run/.* -e var/lib/apt/lists/.*"
 export DEBIAN_FRONTEND=noninteractive
+export FLAVOR=generic
+
 apt-get update
 apt-get install -y live-config live-build gpg gpgv1 xz-utils squashfs-tools
 #sed -i 's/^find/#find/g' /usr/lib/live/build/lb_chroot_hacks
@@ -28,7 +31,6 @@ lb config \
 --mirror-binary-security $UBUNTU_MIRROR \
 --initsystem systemd \
 --chroot-filesystem squashfs \
---mode ubuntu \
 --initramfs live-boot \
 --memtest none \
 --system live  \
@@ -55,9 +57,26 @@ lb config \
 #	--debootstrap-options "--verbose --variant=minbase --include=gnupg,locales"
 
 
-echo "user-setup sudo initramfs-tools" > config/package-lists/recommends.list.chroot
-# if "--bootstrap-flavour minimal" is used, uncomment this. will work packages are missing still.
-echo "user-setup sudo initramfs-tools systemd-sysv dbus iproute2 netplan.io less locales" > config/package-lists/recommends.list.chroot
+DEBS=(
+	user-setup
+	sudo
+	initramfs-tools
+)
+
+if [ $FLAVOR == "generic" ]
+then
+	DEBS+=(
+		systemd-sysv
+		dbus
+		iproute2
+		netplan.io
+		less
+		locales
+	)
+fi
+
+printf "%s\n" "${PACKAGES[@]}" > config/package-lists/recommends.list.chroot
+
 mkdir -p config/includes.chroot/etc/netplan
 cat << EOF > config/includes.chroot/etc/netplan/00-default.yaml
 network:
@@ -73,7 +92,13 @@ network:
 EOF
 chmod 600 config/includes.chroot/etc/netplan/00-default.yaml
 
-gpg --keyid-format long --keyserver hkp://keyserver.ubuntu.com --recv-keys 0x871920D1991BC93C
+mkdir -p config/includes.chroot/etc/apt/apt.conf.d/
+cat <<'EOF' > config/includes.chroot/etc/apt/apt.conf.d/99no-recommends
+APT::Install-Recommends "0";
+APT::Install-Suggests "0";
+EOF
+
+gpg --keyid-format long --keyserver hkps://keyserver.ubuntu.com --recv-keys 0x871920D1991BC93C
 gpg --export 871920D1991BC93C > /usr/share/keyrings/ubuntu-archive-keyring.gpg
 
 lb build
